@@ -86,8 +86,9 @@ function transitionToFinalTerminal() {
     cakeContainer.classList.add('hidden');
     terminalContainer.classList.remove('hidden');
 
-    // Clear previous terminal
+    // Clear previous terminal history
     terminal.innerHTML = '';
+    typingArea.textContent = '';
 
     // Start final message sequence with longer, more flowing messages
     const finalMsgs = [
@@ -110,35 +111,43 @@ function transitionToFinalTerminal() {
 }
 
 function runFinalTyping(messages, index) {
-    if (index >= messages.length) return;
-
-    const msg = messages[index];
-
-    // Create line div
-    const div = document.createElement('div');
-    div.classList.add('line');
-
-    // Check if it's a link type
-    if (msg.type === 'link') {
-        div.innerHTML = `<span class="prompt-path">C:\\Users\\Chisom&gt;</span> <a href="${msg.url}" target="_blank" style="color: var(--accent-color); text-decoration: underline; text-shadow: 0 0 10px var(--secondary-glow); font-weight: bold;">${msg.text}</a>`;
-        terminal.appendChild(div);
-        runFinalTyping(messages, index + 1);
+    if (index >= messages.length) {
+        // Hide cursor when done
+        document.querySelector('.cursor').style.display = 'none';
         return;
     }
 
-    // Typing effect for text
+    const msg = messages[index];
+
+    // Type into the active input line (typingArea), just like a real terminal
     let charI = 0;
-    div.innerHTML = `<span class="prompt-path">C:\\Users\\Chisom&gt;</span> <span class="content"></span>`;
-    terminal.appendChild(div);
-    const contentSpan = div.querySelector('.content');
+    typingArea.textContent = '';
 
     function typeChar() {
         if (charI < msg.text.length) {
-            contentSpan.textContent += msg.text.charAt(charI);
+            typingArea.textContent += msg.text.charAt(charI);
             charI++;
-            // Faster typing for long text
             setTimeout(typeChar, 20);
         } else {
+            // Typing done — push completed line to terminal history
+            const div = document.createElement('div');
+            div.classList.add('line');
+
+            if (msg.type === 'link') {
+                div.innerHTML = `<span class="prompt-path">C:\\Users\\Chisom&gt;</span> <a href="${msg.url}" target="_blank" style="color: var(--accent-color); text-decoration: underline; text-shadow: 0 0 10px var(--secondary-glow); font-weight: bold;">${msg.text}</a>`;
+            } else {
+                div.innerHTML = `<span class="prompt-path">C:\\Users\\Chisom&gt;</span> ${msg.text}`;
+            }
+
+            terminal.appendChild(div);
+
+            // Clear the active input line for next message
+            typingArea.textContent = '';
+
+            // Auto-scroll to bottom
+            terminalContainer.scrollTop = terminalContainer.scrollHeight;
+
+            // Move to next message after delay
             setTimeout(() => runFinalTyping(messages, index + 1), msg.delay);
         }
     }

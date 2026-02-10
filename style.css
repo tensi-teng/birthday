@@ -1,0 +1,376 @@
+:root {
+    --bg-color: #0a0e1a;
+    /* Deep navy/black */
+    --text-color: #00d9ff;
+    /* Bright cyan */
+    --prompt-color: #00d9ff;
+    --root-color: #00d9ff;
+    --accent-color: #ff0080;
+    /* Hot pink accent */
+    --glow-color: rgba(0, 217, 255, 0.6);
+    /* Cyan glow */
+    --secondary-glow: rgba(255, 0, 128, 0.4);
+    /* Pink glow */
+    --card-bg: #fff;
+    --card-text: #333;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Consolas', 'Lucida Console', 'Courier New', monospace;
+    font-size: 20px;
+    /* Slightly smaller for typical CMD feel */
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* --- Terminal Styles --- */
+.container {
+    padding: 2rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.scanlines {
+    /* Optional: Remove scanlines for pure CMD, or keep for retro feel? 
+       User said "command prompt terminal like" which usually means standard CMD, no CRT effects.
+       I'll reduce opacity significantly or comment out if I could, but let's just make it very subtle. */
+    opacity: 0.05;
+}
+
+.line {
+    margin-bottom: 2.5rem;
+    /* Increased spacing significantly */
+    display: block;
+    line-height: 1.5;
+    font-weight: bold;
+    /* Make text bold */
+    text-shadow: 0 0 5px var(--glow-color);
+    /* Hacker glow */
+}
+
+/* CMD Prompt: C:\Users\Chisom> */
+/* We will re-purpose the classes or just style the new structure */
+.prompt-path {
+    color: var(--text-color);
+    /* Standard path color */
+}
+
+.prompt-symbol {
+    color: var(--text-color);
+}
+
+/* Hide unused linux classes if we don't use them, or just generic style */
+.prompt-user,
+.prompt-at,
+.prompt-host {
+    display: none;
+    /* We won't use these but if they exist, hide them */
+}
+
+.cursor {
+    background-color: var(--text-color);
+    /* Block cursor */
+    color: #000;
+    display: inline-block;
+    width: 10px;
+    height: 18px;
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+/* --- App Logic Classes --- */
+.hidden {
+    display: none !important;
+}
+
+.center-stage {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    background-color: rgba(5, 5, 5, 0.9);
+    /* Fade out terminal slightly */
+    animation: fadeIn 1s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes dropIn {
+    0% {
+        transform: translateY(-100vh);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.instruction {
+    margin-top: 2rem;
+    color: #666;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* --- 3D Cake Scene --- */
+.scene {
+    perspective: 1000px;
+    width: 300px;
+    height: 300px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: dropIn 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    /* Drop in with bounce */
+}
+
+.cake-3d {
+    width: 400px;
+    height: 400px;
+    position: relative;
+    /* CSS transforms removed for Three.js */
+    cursor: grab;
+}
+
+/* Remove CSS Sprite Styles */
+/* .cake-sprite { ... } */
+
+.cake-3d:active {
+    cursor: grabbing;
+}
+
+/* Sprite Cake Style */
+.cake-sprite {
+    width: 300px;
+    height: 300px;
+    background-image: url('Pokecut_1770227034057.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    /* Make it stand up via 3D transform? */
+    /* Only if the container is rotated. Currently .cake-3d is rotateX(-20deg). */
+    /* We want the sprite to face the camera or be a flat cutout standing up. */
+    /* If we just place it, it will lie flat if the parent has strange rotation? */
+    /* .cake-3d has transform: rotateX(-20deg) rotateY(0deg) */
+    /* If I put a flat div inside, it will be tilted back 20deg. */
+    /* I likely want it to stand up vertical relative to the "plate". */
+    /* Actually, purely 2D sprite looks best if it billboards (always faces camera) or just rotates with the scene. */
+    /* Let's try making it a simple plane. */
+    transform: translateZ(0);
+}
+
+/* Legacy Cylinder Styles (Disabled) */
+/* .cake-face { ... } */
+/* .cake-top { ... } */
+
+.candle-3d {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 60px;
+    background: radial-gradient(#ff0000, #900000);
+    transform: translate(-50%, -50%) rotateX(-90deg) translateY(-50px) rotateY(0deg);
+    /* Complex rotation to stand up on the flat top which is rotated X 90 */
+    /* Easier: just child of a container that is upright? No, scene is preserve-3d. */
+    /* If cake-top is X:90, then elements on it are flat. To stand up, they need X:-90 relative to top. */
+    transform-origin: bottom center;
+}
+
+.flame {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 15px;
+    height: 30px;
+    background: orange;
+    border-radius: 50% 50% 20% 20%;
+    box-shadow: 0 0 10px orange, 0 0 20px yellow;
+    animation: flicker 0.5s infinite alternate;
+}
+
+@keyframes flicker {
+    0% {
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(-50%) scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+/* --- 2D Cake Styles --- */
+.cake-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: auto;
+}
+
+.cake-2d-img {
+    max-width: 60%;
+    max-height: 60vh;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    animation: dropIn 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    filter: drop-shadow(0 0 30px rgba(0, 217, 255, 0.5)) drop-shadow(0 0 50px rgba(255, 0, 128, 0.3));
+}
+
+/* Legacy 3D classes kept for reference or removed if desired */
+.flame.off {
+    display: none;
+}
+
+/* --- Card Styles --- */
+.card {
+    width: 300px;
+    height: 400px;
+    position: relative;
+    perspective: 1500px;
+    cursor: pointer;
+}
+
+.card:hover .card-front {
+    transform: rotateY(-180deg);
+}
+
+/* If we want click to open, we use a class. Let's use hover for now as it's simpler for CSS, 
+   but user might want persistent open. I'll add a class 'open' in JS if needed. 
+   For now, simple CSS hover to test. */
+
+.card-front,
+.card-inside {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    transition: transform 1s;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.card-front {
+    background: #1a1a1a;
+    color: #fff;
+    border: 2px solid var(--prompt-color);
+    z-index: 2;
+    transform-origin: left;
+}
+
+.card-inside {
+    background: #fff;
+    color: #333;
+    transform: rotateY(0deg);
+    /* Initially hidden behind? No */
+    /* Actually standard card flip: Front rotates -180, Inside is behind it? 
+       Usually: Front is 0, Back (inside) is 180. 
+       Let's try a book opening style. */
+    z-index: 1;
+    left: 0;
+}
+
+/* Book Open Style */
+.card.open .card-front {
+    transform: rotateY(-140deg);
+}
+
+/* Re-adjusting for single element flip vs book */
+/* Let's go simple: Front covers Inside. Front rotates open. */
+.card-inside {
+    background: #fffaf0;
+    z-index: 0;
+}
+
+.decoration {
+    font-size: 4rem;
+    margin-top: 20px;
+}
+
+.spotify-link a {
+    display: inline-block;
+    background: #1db954;
+    /* Spotify Green */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 20px;
+    box-shadow: 0 5px 10px rgba(29, 185, 84, 0.3);
+}
+
+/* ... previous styles ... */
+
+/* Proceed Button */
+.proceed-btn {
+    margin-top: 50px;
+    /* Closer to the cake */
+    padding: 12px 35px;
+    background: transparent;
+    border: 2px solid var(--prompt-color);
+    color: var(--prompt-color);
+    font-family: 'Fira Code', monospace;
+    font-size: 1.1rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px var(--glow-color);
+    z-index: 100;
+    pointer-events: auto;
+    border-radius: 4px;
+    letter-spacing: 2px;
+}
+
+.proceed-btn:hover {
+    background: var(--prompt-color);
+    color: #000;
+    box-shadow: 0 0 25px var(--prompt-color), 0 0 40px var(--secondary-glow);
+    transform: translateY(-2px);
+}

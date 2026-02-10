@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="scanlines"></div>
+
+    <!-- Stage 1: Terminal -->
+    <div id="terminal-container" class="container">
+        <div id="terminal"></div>
+        <div class="input-line">
+            <span class="prompt-path">C:\Users\Chisom&gt;</span> <span id="typing-area"></span><span
+                class="cursor">&nbsp;</span>
+        </div>
+    </div>
+
+    <!-- Stage 2: Cake Display -->
+    <div id="cake-container" class="hidden center-stage">
+        <div id="cake" class="cake-display">
+            <!-- Image injected by JS -->
+        </div>
+    </div>
+
+    <!-- Stage 3: Card (Unused/Hidden or repurposed) -->
+    <div id="card-container" class="hidden center-stage">
+        <!-- Content handled by terminal now -->
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

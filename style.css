@@ -616,7 +616,7 @@ body::after {
 /* ===== RESPONSIVE — TABLETS (≤ 768px) ===== */
 @media (max-width: 768px) {
     html {
-        font-size: 14px;
+        font-size: 17px;
     }
 
     #terminal-container .terminal-body {
@@ -653,7 +653,7 @@ body::after {
 /* ===== RESPONSIVE — PHONES (≤ 480px) ===== */
 @media (max-width: 480px) {
     html {
-        font-size: 13px;
+        font-size: 17px;
     }
 
     body {
@@ -800,7 +800,7 @@ body::after {
 /* ===== RESPONSIVE — VERY SMALL PHONES (≤ 360px) ===== */
 @media (max-width: 360px) {
     html {
-        font-size: 12px;
+        font-size: 16px;
     }
 
 

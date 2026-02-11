@@ -53,48 +53,77 @@ animateParticles();
 // ===== DOM REFERENCES =====
 const terminalContainer = document.getElementById('terminal-container');
 const terminal = document.getElementById('terminal');
-const typingArea = document.getElementById('typing-area');
 const cakeContainer = document.getElementById('cake-container');
 const cake = document.getElementById('cake');
 
+const PROMPT = 'C:\\Users\\Chisom&gt;';
+
+// ===== HELPER: Create an active typing line =====
+function createActiveLine() {
+    const div = document.createElement('div');
+    div.className = 'line active-line';
+    div.innerHTML = `<span class="prompt-path">${PROMPT}</span> <span class="typing-text"></span><span class="cursor">&nbsp;</span>`;
+    terminal.appendChild(div);
+    scrollTerminal();
+    return div;
+}
+
+function scrollTerminal() {
+    const body = terminalContainer.querySelector('.terminal-body');
+    if (body) body.scrollTop = body.scrollHeight;
+    terminalContainer.scrollTop = terminalContainer.scrollHeight;
+}
+
+// ===== HELPER: Type text into active line =====
+function typeIntoLine(line, text, speed, callback) {
+    const textSpan = line.querySelector('.typing-text');
+    let i = 0;
+
+    function tick() {
+        if (i < text.length) {
+            textSpan.textContent += text.charAt(i);
+            i++;
+            scrollTerminal();
+            setTimeout(tick, speed + Math.random() * speed * 0.6);
+        } else {
+            callback();
+        }
+    }
+    tick();
+}
+
+// ===== HELPER: Finalize a line (remove cursor, freeze it) =====
+function finalizeLine(line) {
+    const cursor = line.querySelector('.cursor');
+    if (cursor) cursor.remove();
+    line.classList.remove('active-line');
+}
+
 // ===== CONFIGURATION =====
 const msgs = [
-    { text: "> Hey", delay: 1500 },
-    { text: "> Today is your birthday so I coded this...", delay: 2000 },
+    { text: "Hey", delay: 1500 },
+    { text: "Today is your birthday so I coded this...", delay: 2000 },
     { text: "Executing...", delay: 1000 }
 ];
 
-// ===== TERMINAL LOGIC =====
-let lineIndex = 0;
-let charIndex = 0;
-
-function typeLine() {
-    if (lineIndex >= msgs.length) {
+// ===== INITIAL TYPING SEQUENCE =====
+function runInitialTyping(index) {
+    if (index >= msgs.length) {
         setTimeout(transitionToCake, 1000);
         return;
     }
 
-    const currentMsg = msgs[lineIndex];
-    if (charIndex < currentMsg.text.length) {
-        typingArea.textContent += currentMsg.text.charAt(charIndex);
-        charIndex++;
-        setTimeout(typeLine, 50 + Math.random() * 50);
-    } else {
-        // Push completed line to terminal history
-        const div = document.createElement('div');
-        div.className = 'line';
-        div.innerHTML = `<span class="prompt-path">C:\\Users\\Chisom&gt;</span> ${currentMsg.text.replace('>', '').trim()}`;
-        terminal.appendChild(div);
+    const msg = msgs[index];
+    const line = createActiveLine();
 
-        typingArea.textContent = '';
-        charIndex = 0;
-        lineIndex++;
-        setTimeout(typeLine, currentMsg.delay);
-    }
+    typeIntoLine(line, msg.text, 45, () => {
+        finalizeLine(line);
+        setTimeout(() => runInitialTyping(index + 1), msg.delay);
+    });
 }
 
-// Start typing after a short delay
-setTimeout(typeLine, 1200);
+// Start after a short delay
+setTimeout(() => runInitialTyping(0), 1200);
 
 // ===== TRANSITION LOGIC =====
 function transitionToCake() {
@@ -132,10 +161,9 @@ function transitionToFinalTerminal() {
     terminalContainer.classList.remove('hidden');
 
     terminal.innerHTML = '';
-    typingArea.textContent = '';
 
     const finalMsgs = [
-        { text: "So, yeah… you're old. Like, really old. Happy birthday, Chisom—heh.", delay: 2500 },
+        { text: "So, yeah… you're old. Like, really old. Happy birthday, dork.", delay: 2500 },
         { text: "I don't say this very often, but I am proud of you.", delay: 2500 },
         { text: "It has been a long road, but it's turning out better than you expected, and for that, I am grateful.", delay: 3000 },
         { text: "You still don't have a girlfriend, even with your sweet mouth—tch, what a letdown 😂.", delay: 2500 },
@@ -155,39 +183,23 @@ function transitionToFinalTerminal() {
 
 function runFinalTyping(messages, index) {
     if (index >= messages.length) {
-        document.querySelector('.cursor').style.display = 'none';
+        // All messages done — add one last empty prompt with a cursor for the real terminal feel
+        createActiveLine();
         return;
     }
 
     const msg = messages[index];
-    let charI = 0;
-    typingArea.textContent = '';
+    const line = createActiveLine();
 
-    function typeChar() {
-        if (charI < msg.text.length) {
-            typingArea.textContent += msg.text.charAt(charI);
-            charI++;
-            // Auto-scroll while typing
-            terminalContainer.scrollTop = terminalContainer.scrollHeight;
-            setTimeout(typeChar, 20);
-        } else {
-            const div = document.createElement('div');
-            div.classList.add('line');
+    typeIntoLine(line, msg.text, 18, () => {
+        finalizeLine(line);
 
-            if (msg.type === 'link') {
-                div.innerHTML = `<span class="prompt-path">C:\\Users\\Chisom&gt;</span> <a href="${msg.url}" target="_blank">${msg.text}</a>`;
-            } else {
-                div.innerHTML = `<span class="prompt-path">C:\\Users\\Chisom&gt;</span> ${msg.text}`;
-            }
-
-            terminal.appendChild(div);
-            typingArea.textContent = '';
-
-            // Auto-scroll
-            terminalContainer.scrollTop = terminalContainer.scrollHeight;
-
-            setTimeout(() => runFinalTyping(messages, index + 1), msg.delay);
+        // If it's a link, rebuild the line content with an <a> tag
+        if (msg.type === 'link') {
+            line.innerHTML = `<span class="prompt-path">${PROMPT}</span> <a href="${msg.url}" target="_blank">${msg.text}</a>`;
         }
-    }
-    typeChar();
+
+        scrollTerminal();
+        setTimeout(() => runFinalTyping(messages, index + 1), msg.delay);
+    });
 }

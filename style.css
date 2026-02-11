@@ -29,7 +29,7 @@
 }
 
 html {
-    font-size: 15px;
+    font-size: 16px;
     scroll-behavior: smooth;
 }
 
@@ -189,6 +189,7 @@ body::after {
     padding: 1.5rem 2rem 1rem;
     flex: 1;
     min-height: 0;
+    overflow-y: auto;
 }
 
 /* ===== TERMINAL LINES ===== */
@@ -200,12 +201,21 @@ body::after {
     font-size: 0.93rem;
     color: var(--text-color);
     text-shadow: 0 0 8px var(--glow-soft);
-    animation: lineAppear 0.3s ease-out;
     word-wrap: break-word;
+}
+
+.line:not(.active-line) {
+    animation: lineAppear 0.3s ease-out;
 }
 
 .line:last-child {
     margin-bottom: 1.2rem;
+}
+
+/* Inline typing text */
+.typing-text {
+    color: var(--text-color);
+    text-shadow: 0 0 6px var(--glow-soft);
 }
 
 @keyframes lineAppear {
@@ -242,26 +252,6 @@ body::after {
 .prompt-at,
 .prompt-host {
     display: none;
-}
-
-/* ===== INPUT LINE ===== */
-.input-line {
-    display: flex;
-    align-items: center;
-    padding: 0 2rem 1.5rem;
-    font-size: 0.93rem;
-    gap: 2px;
-}
-
-.input-line .prompt-path {
-    white-space: nowrap;
-}
-
-#typing-area {
-    color: var(--text-color);
-    text-shadow: 0 0 6px var(--glow-soft);
-    white-space: pre-wrap;
-    word-wrap: break-word;
 }
 
 /* ===== CURSOR ===== */
@@ -633,11 +623,7 @@ body::after {
         padding: 1rem 1.2rem 0.8rem;
     }
 
-    .input-line {
-        padding: 0 1.2rem 1rem;
-        font-size: 0.82rem;
-        flex-wrap: wrap;
-    }
+
 
     .line {
         font-size: 0.82rem;
@@ -726,20 +712,7 @@ body::after {
         margin-right: 1px;
     }
 
-    /* Input line */
-    .input-line {
-        padding: 0 0.9rem 0.8rem;
-        font-size: 0.75rem;
-        gap: 1px;
-        flex-wrap: wrap;
-    }
 
-    #typing-area {
-        font-size: 0.75rem;
-        max-width: calc(100% - 130px);
-        overflow-wrap: break-word;
-        word-break: break-word;
-    }
 
     /* Cursor */
     .cursor {
@@ -858,14 +831,7 @@ body::after {
         font-size: 0.65rem;
     }
 
-    .input-line {
-        padding: 0 0.7rem 0.6rem;
-        font-size: 0.7rem;
-    }
 
-    #typing-area {
-        font-size: 0.7rem;
-    }
 
     .terminal-statusbar {
         padding: 4px 8px;

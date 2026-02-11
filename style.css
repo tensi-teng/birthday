@@ -613,21 +613,20 @@ body::after {
     }
 }
 
-/* ===== RESPONSIVE — TABLETS (≤ 768px) ===== */
-@media (max-width: 768px) {
+/* ===== RESPONSIVE — TABLETS & PHONES (≤ 780px) ===== */
+@media (max-width: 780px) {
     html {
         font-size: 17px;
     }
 
     #terminal-container .terminal-body {
-        padding: 1rem 1.2rem 0.8rem;
+        padding: 2rem 1.8rem;
     }
 
-
-
     .line {
-        font-size: 0.82rem;
-        margin-bottom: 0.5rem;
+        font-size: 1rem;
+        /* Exactly 17px since html root is 17px */
+        margin-bottom: 0.8rem;
         line-height: 1.6;
         overflow-wrap: break-word;
         word-break: break-word;
@@ -688,15 +687,16 @@ body::after {
 
     /* Terminal body */
     #terminal-container .terminal-body {
-        padding: 0.8rem 0.9rem 0.5rem;
+        padding: 2.2rem 1.5rem;
         min-height: 45vh;
     }
 
-    /* Lines — smaller, tighter, proper wrapping */
+    /* Lines — larger and more readable per user request */
     .line {
-        font-size: 0.75rem;
-        line-height: 1.55;
-        margin-bottom: 0.45rem;
+        font-size: 1rem;
+        /* Stay at 17px for readability */
+        line-height: 1.6;
+        margin-bottom: 0.7rem;
         overflow-wrap: break-word;
         word-break: break-word;
         hyphens: auto;
@@ -706,10 +706,10 @@ body::after {
         margin-bottom: 0.8rem;
     }
 
-    /* Prompt path — shorten on mobile */
+    /* Prompt path — legible on mobile */
     .prompt-path {
-        font-size: 0.72rem;
-        margin-right: 1px;
+        font-size: 0.95rem;
+        margin-right: 2px;
     }
 
 
@@ -793,42 +793,41 @@ body::after {
 
     /* Link styles */
     .line a {
-        font-size: 0.75rem;
+        font-size: 1rem;
     }
 }
 
 /* ===== RESPONSIVE — VERY SMALL PHONES (≤ 360px) ===== */
 @media (max-width: 360px) {
     html {
-        font-size: 16px;
+        font-size: 17px;
+        /* Keep consistent with user request */
     }
 
-
-
     .terminal-titlebar {
-        padding: 8px 10px;
+        padding: 10px 12px;
     }
 
     .titlebar-title {
-        font-size: 0.55rem;
+        font-size: 0.6rem;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
     #terminal-container .terminal-body {
-        padding: 0.6rem 0.7rem 0.4rem;
+        padding: 1.5rem 1.2rem;
         min-height: 40vh;
     }
 
     .line {
-        font-size: 0.7rem;
-        margin-bottom: 0.35rem;
+        font-size: 1rem;
+        margin-bottom: 0.6rem;
         line-height: 1.5;
     }
 
     .prompt-path {
-        font-size: 0.65rem;
+        font-size: 0.9rem;
     }
 
 
